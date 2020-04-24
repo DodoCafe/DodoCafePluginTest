@@ -544,11 +544,11 @@ PlayerSettings:
   m_MobileRenderingPath: 1
   metroPackageName: DodoCafePluginTest
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: 
+  metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: 
-  metroCertificateIssuer: 
-  metroCertificateNotAfter: 0000000000000000
+  metroCertificateSubject: DodoCafe
+  metroCertificateIssuer: DodoCafe
+  metroCertificateNotAfter: 801e488b0839d701
   metroApplicationDescription: Test of the DodoCafe plugin for Unity.
   wsaImages: {}
   metroTileShortName: DodoCafePluginTest
