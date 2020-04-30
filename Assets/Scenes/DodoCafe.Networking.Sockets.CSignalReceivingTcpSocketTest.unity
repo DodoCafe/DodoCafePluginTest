@@ -441,7 +441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Text: {fileID: 1299799977}
-  ServerApplicationIpv4: 192.168.31.119
+  ServerApplicationIpv4: 192.168.31.222
   ServerApplicationPortNumber: 5005
 --- !u!1 &1643876842
 GameObject:
