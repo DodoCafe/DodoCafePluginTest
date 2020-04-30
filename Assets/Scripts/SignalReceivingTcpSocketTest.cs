@@ -1,6 +1,5 @@
 ﻿using DodoCafe.Networking.Sockets;
-using System.Collections;
-using System.Threading;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,12 +17,8 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
 
     private void TestAsynchronousOperation()
     {
-        Thread workerThread = new Thread( async () =>
-        {
-            await TestSignalReceivingTcpSocketAsync();
-            UnityMainThreadDispatcher.Instance().Enqueue( NotifyWorkerThreadCompletion() );
-        } );
-        workerThread.Start();
+        TaskScheduler unityMainThreadTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        TestSignalReceivingTcpSocketAsync().ContinueWith( new Action< Task >( UpdateTextAfterTestingSignalReceivingTcpSocket ), unityMainThreadTaskScheduler );
         Text.text = "Doing something else while concurrently testing signal receiving TCP socket.";
     }
 
@@ -35,9 +30,8 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
         socket.Disconnect();
     }
 
-    private IEnumerator NotifyWorkerThreadCompletion()
+    private void UpdateTextAfterTestingSignalReceivingTcpSocket( Task antecedentTask )
     {
         Text.text = "Connected, received signal, and disconnected from the destined server application.";
-        yield return null;
     }
 }
