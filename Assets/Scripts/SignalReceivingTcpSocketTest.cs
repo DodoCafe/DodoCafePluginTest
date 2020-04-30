@@ -12,10 +12,10 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
 
     private void Start()
     {
-        TestAsynchronousOperation();
+        TestConcurrency();
     }
 
-    private void TestAsynchronousOperation()
+    private void TestConcurrency()
     {
         TaskScheduler unityMainThreadTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         TestSignalReceivingTcpSocketAsync().ContinueWith( new Action< Task >( UpdateTextAfterTestingSignalReceivingTcpSocket ), unityMainThreadTaskScheduler );
