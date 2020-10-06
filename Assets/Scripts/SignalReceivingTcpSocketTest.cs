@@ -28,10 +28,10 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
     {
         try
         {
-            var socket = new CSignalReceivingTcpSocket();
-            await socket.ConnectAsync( ServerApplicationIpv4, ServerApplicationPortNumber );
-            await socket.ReceiveSignalAsync();
-            socket.Disconnect();
+            var kSocket = new CSignalReceivingTcpSocket();
+            await kSocket.ConnectAsync( ServerApplicationIpv4, ServerApplicationPortNumber );
+            await kSocket.ReceiveSignalAsync();
+            kSocket.Disconnect();
             Interlocked.Exchange( ref m_strText, "Connected, received signal, and disconnected from the destined server application." );
         }
         catch ( Exception kException )
