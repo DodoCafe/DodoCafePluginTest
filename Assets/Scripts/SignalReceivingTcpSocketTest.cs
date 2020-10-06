@@ -1,5 +1,6 @@
 ﻿using DodoCafe.Networking.Sockets;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
     public string ServerApplicationIpv4;
     public int ServerApplicationPortNumber;
 
+    private string m_strText;
+
     private void Start()
     {
         TestConcurrency();
@@ -17,21 +20,28 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
 
     private void TestConcurrency()
     {
-        TaskScheduler unityMainThreadTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        TestSignalReceivingTcpSocketAsync().ContinueWith( new Action< Task >( UpdateTextAfterTestingSignalReceivingTcpSocket ), unityMainThreadTaskScheduler );
-        Text.text = "Doing something else while concurrently testing signal receiving TCP socket.";
+        TestSignalReceivingTcpSocketAsync();
+        Interlocked.Exchange( ref m_strText, "Doing something else while concurrently testing signal receiving TCP socket." );
     }
 
     private async Task TestSignalReceivingTcpSocketAsync()
     {
-        var socket = new CSignalReceivingTcpSocket();
-        await socket.ConnectAsync( ServerApplicationIpv4, ServerApplicationPortNumber );
-        await socket.ReceiveSignalAsync();
-        socket.Disconnect();
+        try
+        {
+            var socket = new CSignalReceivingTcpSocket();
+            await socket.ConnectAsync( ServerApplicationIpv4, ServerApplicationPortNumber );
+            await socket.ReceiveSignalAsync();
+            socket.Disconnect();
+            Interlocked.Exchange( ref m_strText, "Connected, received signal, and disconnected from the destined server application." );
+        }
+        catch ( Exception kException )
+        {
+            Interlocked.Exchange( ref m_strText, kException.Message );
+        }
     }
 
-    private void UpdateTextAfterTestingSignalReceivingTcpSocket( Task antecedentTask )
+    private void Update()
     {
-        Text.text = "Connected, received signal, and disconnected from the destined server application.";
+        Text.text = m_strText;
     }
 }
