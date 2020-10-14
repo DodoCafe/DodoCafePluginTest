@@ -7,21 +7,20 @@ using UnityEngine.UI;
 
 public class SignalReceivingTcpSocketTest : MonoBehaviour
 {
-    public Text Text;
-    public string ServerApplicationIpv4;
+    public Text MainText;
+    public Text ServerApplicationIpv4Text;
     public int ServerApplicationPortNumber;
 
     private string m_strText;
 
-    private void Start()
+    public void TestConcurrency()
     {
-        TestConcurrency();
-    }
-
-    private void TestConcurrency()
-    {
+        m_strText = null;
         TestSignalReceivingTcpSocketAsync();
-        Interlocked.Exchange( ref m_strText, "Doing something else while concurrently testing signal receiving TCP socket." );
+        if ( m_strText == null )
+        {
+            Interlocked.Exchange( ref m_strText, "Doing something else while concurrently testing signal receiving TCP socket." );
+        }
     }
 
     private async Task TestSignalReceivingTcpSocketAsync()
@@ -29,7 +28,7 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
         try
         {
             var kSocket = new CSignalReceivingTcpSocket();
-            await kSocket.ConnectAsync( ServerApplicationIpv4, ServerApplicationPortNumber );
+            await kSocket.ConnectAsync( ServerApplicationIpv4Text.text, ServerApplicationPortNumber );
             await kSocket.ReceiveSignalAsync();
             kSocket.Disconnect();
             Interlocked.Exchange( ref m_strText, "Connected, received signal, and disconnected from the destined server application." );
@@ -42,6 +41,6 @@ public class SignalReceivingTcpSocketTest : MonoBehaviour
 
     private void Update()
     {
-        Text.text = m_strText;
+        MainText.text = m_strText;
     }
 }
